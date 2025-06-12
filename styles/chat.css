@@ -14,6 +14,14 @@
     box-sizing: border-box;
 }
 
+#chat-modal.hidden {
+    display: none;
+}
+
+#chat-modal:not(.hidden) {
+    display: flex;
+}
+
 /* CAIXA DO CHAT */
 .chat-box {
     width: 100%;
@@ -49,8 +57,29 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    flex: 1;
-    text-align: center;
+}
+
+.chat-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.online {
+    background: #76ff03;
+    box-shadow: 0 0 5px #76ff03;
 }
 
 .chat-close-btn {
@@ -61,10 +90,6 @@
     cursor: pointer;
     padding: 5px;
     transition: transform 0.2s;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
     width: 24px;
     height: 24px;
     display: flex;
@@ -75,7 +100,7 @@
 
 .chat-close-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-50%) scale(1.1);
+    transform: scale(1.1);
 }
 
 /* ÁREA DE MENSAGENS */
@@ -132,43 +157,103 @@
     align-self: flex-end;
 }
 
+.mensagem-info {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 3px;
+    text-align: right;
+    font-style: italic;
+}
+
 /* ÁREA DE INPUT */
 .chat-input-area {
-    display: flex;
-    padding: 12px;
+    padding: 10px;
     background: white;
     border-top: 1px solid #eee;
-    align-items: center;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
 }
 
 #chat-input {
     flex: 1;
-    padding: 10px 15px;
+    padding: 12px 50px 12px 15px;
     border: 1px solid #ddd;
-    border-radius: 20px;
+    border-radius: 24px;
     outline: none;
     font-size: 14px;
     transition: border-color 0.3s;
+    height: 48px;
+    box-sizing: border-box;
 }
 
 #chat-input:focus {
     border-color: #4CAF50;
 }
 
-.chat-input-area button {
-    margin-left: 8px;
-    padding: 8px 16px;
-    border-radius: 20px;
+.btn-send {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     background: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
 }
 
-.chat-input-area button:hover {
+.btn-send:hover {
     background: #3d8b40;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.btn-send svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* TYPING INDICATOR */
+.mensagem.digitando {
+    opacity: 0.8;
+}
+
+.typing-indicator {
+    display: flex;
+    padding: 10px 15px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background-color: #7f8c8d;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typingAnimation 1.4s infinite both;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
 }
 
 /* RESPONSIVIDADE */
@@ -183,19 +268,48 @@
         padding: 0;
     }
     
-    .mensagem {
-        max-width: 90%;
+    #chat-input {
+        padding: 10px 45px 10px 12px;
+        height: 44px;
     }
     
-    .chat-header {
-        padding: 12px;
+    .btn-send {
+        width: 32px;
+        height: 32px;
+        right: 6px;
     }
     
-    .chat-header h3 {
-        font-size: 15px;
+    .btn-send svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+    .chat-box {
+        background: #2c3e50;
+        color: #ecf0f1;
     }
     
-    .chat-close-btn {
-        right: 8px;
+    #chat-mensagens {
+        background: #34495e;
+    }
+    
+    .chat-input-area {
+        background: #2c3e50;
+        border-top-color: #3d566e;
+    }
+    
+    #chat-input {
+        background: #34495e;
+        color: #ecf0f1;
+        border-color: #3d566e;
+    }
+    
+    .mensagem.atendente {
+        background: #34495e;
+        color: #ecf0f1;
+        box-shadow: none;
     }
 }

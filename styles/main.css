@@ -118,3 +118,197 @@ button:hover {
         font-size: 14px;
     }
 }
+/* Estilos para agendamentos */
+.agendamento-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 3px solid #4CAF50;
+    transition: all 0.3s;
+}
+
+.agendamento-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.agendamento-data {
+    font-weight: 600;
+    color: #4CAF50;
+    min-width: 180px;
+}
+
+.agendamento-info h4 {
+    margin: 0 0 5px;
+    color: #2c3e50;
+}
+
+.agendamento-info p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.status.pendente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status.confirmado {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status.cancelado {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-cancel {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #c0392b;
+}
+
+/* Estilos para o chat */
+.mensagem {
+    max-width: 80%;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    position: relative;
+    animation: fadeIn 0.3s;
+}
+
+.mensagem.usuario {
+    background: #4CAF50;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 2px;
+}
+
+.mensagem.atendente {
+    background: #e9ecef;
+    color: #495057;
+    margin-right: auto;
+    border-bottom-left-radius: 2px;
+}
+
+.hora-mensagem {
+    display: block;
+    font-size: 11px;
+    opacity: 0.8;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* Estilos para clínicas */
+.clinica-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.clinica-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.clinica-imagem {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.clinica-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.clinica-info {
+    padding: 15px;
+}
+
+.clinica-info h3 {
+    margin: 0 0 5px;
+    color: #2c3e50;
+}
+
+.clinica-especialidade {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.clinica-endereco {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.clinica-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-detalhes, .btn-agendar {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-detalhes {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.btn-detalhes:hover {
+    background: #e9ecef;
+}
+
+.btn-agendar {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-agendar:hover {
+    background: #3d8b40;
+}

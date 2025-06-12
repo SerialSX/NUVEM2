@@ -1,254 +1,205 @@
-let chatAberto = false;
-let chatAtivo = null;
+// chat.js - Sistema de Chat Completo
 
-document.addEventListener('DOMContentLoaded', async function() {
-    await carregarHistoricoChat();
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && chatAberto) {
-            fecharChat();
-        }
-    });
+// Inicializa quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', async () => {
+    if (document.getElementById('chat-mensagens')) {
+        await carregarMensagens();
+        
+        // Configura evento de enviar mensagem
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                enviarMensagem();
+            }
+        });
+        
+        document.getElementById('btn-enviar').addEventListener('click', enviarMensagem);
+    }
 });
 
-async function carregarHistoricoChat() {
+/**
+ * Carrega o histórico de mensagens
+ */
+async function carregarMensagens() {
     const chatMensagens = document.getElementById('chat-mensagens');
-    chatMensagens.innerHTML = '<p class="loading-chat">Carregando mensagens...</p>';
+    chatMensagens.innerHTML = '<div class="loading">Carregando mensagens...</div>';
     
     try {
-        const paciente = await getPacienteAtual();
+        // Obter paciente atual
+        const Paciente = Parse.Object.extend('Paciente');
+        const paciente = await new Parse.Query(Paciente)
+            .equalTo('user', Parse.User.current())
+            .first();
+        
         if (!paciente) throw new Error('Paciente não encontrado');
         
-        const mensagens = await buscarMensagens(paciente.id);
+        // Buscar mensagens
+        const Mensagem = Parse.Object.extend('Mensagem');
+        const query = new Parse.Query(Mensagem);
+        query.equalTo('paciente', paciente);
+        query.limit(50);
+        query.ascending('createdAt');
+        
+        const mensagens = await query.find();
         
         chatMensagens.innerHTML = '';
         
         if (mensagens.length === 0) {
-            chatMensagens.innerHTML = '<p class="empty-chat">Nenhuma mensagem ainda. Inicie a conversa!</p>';
+            chatMensagens.innerHTML = '<div class="empty">Nenhuma mensagem ainda. Inicie a conversa!</div>';
             return;
         }
         
-        for (const msg of mensagens) {
-            renderMensagem({
+        mensagens.forEach(msg => {
+            adicionarMensagemAoChat({
                 texto: msg.get('texto'),
-                tipo: msg.get('tipo'),
-                hora: formatarHora(msg.createdAt)
+                tipo: msg.get('remetente') === 'paciente' ? 'usuario' : 'atendente',
+                hora: msg.createdAt
             });
-        }
+        });
         
-        rolarParaUltimaMensagem();
+        // Rolagem automática para a última mensagem
+        chatMensagens.scrollTop = chatMensagens.scrollHeight;
+        
     } catch (error) {
-        console.error('Erro ao carregar chat:', error);
-        chatMensagens.innerHTML = '<p class="error-chat">Erro ao carregar mensagens</p>';
+        console.error('Erro ao carregar mensagens:', error);
+        chatMensagens.innerHTML = '<div class="error">Erro ao carregar mensagens</div>';
     }
 }
 
-async function getPacienteAtual() {
-    try {
-        const Paciente = Parse.Object.extend('Paciente');
-        const query = new Parse.Query(Paciente);
-        query.equalTo('user', Parse.User.current());
-        return await query.first();
-    } catch (error) {
-        console.error('Erro ao buscar paciente:', error);
-        return null;
-    }
-}
-
-async function buscarMensagens(pacienteId) {
-    try {
-        const Chat = Parse.Object.extend('Chat');
-        const query = new Parse.Query(Chat);
-        query.equalTo('pacienteId', pacienteId);
-        query.ascending('createdAt');
-        query.limit(100);
-        return await query.find();
-    } catch (error) {
-        console.error('Erro ao buscar mensagens:', error);
-        return [];
-    }
-}
-
-function abrirChat() {
-    if (chatAberto) return;
-    
-    const chatModal = document.getElementById('chat-modal');
-    chatModal.style.display = 'flex';
-    document.getElementById('chat-input').focus();
-    chatAberto = true;
-    
-    rolarParaUltimaMensagem();
-    iniciarChatAtendente();
-}
-
-function fecharChat() {
-    document.getElementById('chat-modal').style.display = 'none';
-    chatAberto = false;
-    
-    if (chatAtivo) {
-        clearInterval(chatAtivo);
-        chatAtivo = null;
-    }
-}
-
-function rolarParaUltimaMensagem() {
-    const chatMensagens = document.getElementById('chat-mensagens');
-    chatMensagens.scrollTop = chatMensagens.scrollHeight;
-}
-
-function iniciarChatAtendente() {
-    if (!chatAtivo) {
-        chatAtivo = setInterval(async () => {
-            try {
-                const paciente = await getPacienteAtual();
-                if (!paciente) return;
-                
-                const mensagensNaoLidas = await buscarMensagensNaoLidas(paciente.id);
-                
-                for (const msg of mensagensNaoLidas) {
-                    renderMensagem({
-                        texto: msg.get('texto'),
-                        tipo: 'atendente',
-                        hora: formatarHora(msg.createdAt)
-                    });
-                    msg.set('lida', true);
-                    await msg.save();
-                }
-                
-                if (mensagensNaoLidas.length > 0) {
-                    rolarParaUltimaMensagem();
-                }
-            } catch (error) {
-                console.error('Erro ao verificar mensagens:', error);
-            }
-        }, 3000);
-    }
-}
-
-async function buscarMensagensNaoLidas(pacienteId) {
-    try {
-        const Chat = Parse.Object.extend('Chat');
-        const query = new Parse.Query(Chat);
-        query.equalTo('pacienteId', pacienteId);
-        query.equalTo('lida', false);
-        query.equalTo('tipo', 'atendente');
-        return await query.find();
-    } catch (error) {
-        console.error('Erro ao buscar mensagens não lidas:', error);
-        return [];
-    }
-}
-
-function formatarHora(data) {
-    return new Date(data).toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false
-    });
-}
-
+/**
+ * Envia uma mensagem no chat
+ */
 async function enviarMensagem() {
     const input = document.getElementById('chat-input');
     const texto = input.value.trim();
     
-    if (!texto) return;
+    if (!texto) {
+        mostrarFeedback('Por favor, digite uma mensagem', 'error');
+        return;
+    }
     
     try {
-        const paciente = await getPacienteAtual();
+        // Obter paciente atual
+        const Paciente = Parse.Object.extend('Paciente');
+        const paciente = await new Parse.Query(Paciente)
+            .equalTo('user', Parse.User.current())
+            .first();
+        
         if (!paciente) throw new Error('Paciente não encontrado');
         
-        await salvarMensagem(paciente.id, texto);
+        // Criar mensagem
+        const Mensagem = Parse.Object.extend('Mensagem');
+        const mensagem = new Mensagem();
         
-        renderMensagem({
-            texto: texto,
+        mensagem.set('texto', texto);
+        mensagem.set('remetente', 'paciente');
+        mensagem.set('paciente', paciente);
+        mensagem.set('lida', false);
+        
+        await mensagem.save();
+        
+        // Adiciona ao chat
+        adicionarMensagemAoChat({
+            texto,
             tipo: 'usuario',
-            hora: formatarHora(new Date())
+            hora: new Date()
         });
         
         input.value = '';
-        rolarParaUltimaMensagem();
         
-        // Simular resposta do atendente
+        // Simula resposta do atendente
         setTimeout(async () => {
-            try {
-                await salvarMensagem(
-                    paciente.id, 
-                    'Recebemos sua mensagem. Um atendente responderá em breve.', 
-                    'atendente', 
-                    false
-                );
-            } catch (error) {
-                console.error('Erro ao enviar resposta automática:', error);
-            }
-        }, 1000);
+            const resposta = await gerarRespostaAtendente(texto);
+            adicionarMensagemAoChat({
+                texto: resposta,
+                tipo: 'atendente',
+                hora: new Date()
+            });
+            
+            // Salva a resposta do atendente
+            const respostaMsg = new Mensagem();
+            respostaMsg.set('texto', resposta);
+            respostaMsg.set('remetente', 'atendente');
+            respostaMsg.set('paciente', paciente);
+            respostaMsg.set('lida', true);
+            await respostaMsg.save();
+        }, 1500);
+        
     } catch (error) {
         console.error('Erro ao enviar mensagem:', error);
-        showAlert('error', 'Erro ao enviar mensagem: ' + error.message);
+        mostrarFeedback('Erro ao enviar mensagem', 'error');
     }
 }
 
-async function salvarMensagem(pacienteId, texto, tipo = 'usuario', lida = true) {
-    try {
-        const Chat = Parse.Object.extend('Chat');
-        const mensagem = new Chat();
-        mensagem.set('pacienteId', pacienteId);
-        mensagem.set('texto', texto);
-        mensagem.set('tipo', tipo);
-        mensagem.set('lida', lida);
-        return await mensagem.save();
-    } catch (error) {
-        console.error('Erro ao salvar mensagem:', error);
-        throw error;
+/**
+ * Gera uma resposta automática do atendente
+ */
+async function gerarRespostaAtendente(mensagem) {
+    // Aqui você pode implementar lógica mais sofisticada
+    // ou integrar com um serviço de chatbot
+    
+    const mensagemLower = mensagem.toLowerCase();
+    
+    if (mensagemLower.includes('ola') || mensagemLower.includes('oi') || mensagemLower.includes('olá')) {
+        return 'Olá! Como posso ajudar você hoje?';
     }
+    
+    if (mensagemLower.includes('consulta') || mensagemLower.includes('marcar')) {
+        return 'Para marcar uma consulta, por favor acesse a seção "Agendamentos" ou clique em "Agendar Consulta" no menu.';
+    }
+    
+    if (mensagemLower.includes('horario') || mensagemLower.includes('funcionamento')) {
+        return 'Nossas clínicas funcionam de segunda a sexta, das 8h às 18h. Aos sábados, das 8h às 12h.';
+    }
+    
+    if (mensagemLower.includes('exame') || mensagemLower.includes('resultado')) {
+        return 'Para acessar seus exames, vá até a seção "Meus Exames" no menu principal. Caso não encontre, entre em contato com o laboratório.';
+    }
+    
+    if (mensagemLower.includes('receita') || mensagemLower.includes('medicamento')) {
+        return 'Receitas médicas podem ser encontradas na seção "Minhas Receitas". Caso não localize, verifique com seu médico.';
+    }
+    
+    if (mensagemLower.includes('obrigado') || mensagemLower.includes('agradeço')) {
+        return 'De nada! Estamos aqui para ajudar. Se precisar de mais alguma coisa, é só chamar.';
+    }
+    
+    return 'Obrigado pela sua mensagem. Um de nossos atendentes responderá em breve. Enquanto isso, posso ajudar com:\n\n- Agendamentos\n- Horários de funcionamento\n- Resultados de exames\n- Receitas médicas';
 }
 
-function renderMensagem({ texto, tipo, hora }) {
+/**
+ * Adiciona uma mensagem ao chat
+ */
+function adicionarMensagemAoChat({ texto, tipo, hora }) {
     const chatMensagens = document.getElementById('chat-mensagens');
     
-    // Limpa mensagens de estado se existirem
-    if (chatMensagens.querySelector('.loading-chat, .empty-chat, .error-chat')) {
-        chatMensagens.innerHTML = '';
-    }
+    const mensagemDiv = document.createElement('div');
+    mensagemDiv.className = `mensagem ${tipo}`;
     
-    const divMensagem = document.createElement('div');
-    divMensagem.className = `mensagem ${tipo}`;
+    const horaFormatada = hora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     
-    divMensagem.innerHTML = `
+    mensagemDiv.innerHTML = `
         <div class="mensagem-conteudo">
             <p>${texto}</p>
-            <span class="hora-mensagem">${hora}</span>
+            <span class="hora-mensagem">${horaFormatada}</span>
         </div>
     `;
     
-    chatMensagens.appendChild(divMensagem);
+    chatMensagens.appendChild(mensagemDiv);
+    chatMensagens.scrollTop = chatMensagens.scrollHeight;
 }
 
-function showAlert(type, message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert ${type}`;
-    alertDiv.textContent = message;
-    document.body.prepend(alertDiv);
+/**
+ * Mostra feedback ao usuário
+ */
+function mostrarFeedback(mensagem, tipo) {
+    const feedbackDiv = document.getElementById('feedback');
+    if (!feedbackDiv) return;
+    
+    feedbackDiv.textContent = mensagem;
+    feedbackDiv.className = `feedback ${tipo}`;
+    feedbackDiv.style.display = 'block';
     
     setTimeout(() => {
-        alertDiv.style.opacity = '0';
-        setTimeout(() => alertDiv.remove(), 300);
+        feedbackDiv.style.display = 'none';
     }, 5000);
 }
-
-// Event listeners
-document.getElementById('chat-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        enviarMensagem();
-    }
-});
-
-document.getElementById('chat-modal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        fecharChat();
-    }
-});
-
-// Exporta funções globais
-window.abrirChat = abrirChat;
-window.fecharChat = fecharChat;
-window.enviarMensagem = enviarMensagem;

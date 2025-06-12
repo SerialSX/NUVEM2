@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Clínica - Agenda Médica</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/clinica-detalhes.css">
+    <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+    <script src="scripts/parseConfig.js"></script>
+    <script src="scripts/auth.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Barra Lateral (mesma do paciente.html) -->
+        
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <div class="clinica-detalhes-container">
+                <button class="btn-voltar" onclick="window.history.back()">
+                    ← Voltar para clínicas
+                </button>
+                
+                <div class="clinica-header">
+                    <div class="clinica-imagem-grande" id="clinica-imagem"></div>
+                    <div class="clinica-info-header">
+                        <h1 id="clinica-nome"></h1>
+                        <div class="clinica-avaliacao">
+                            <div class="estrelas" id="clinica-avaliacao"></div>
+                            <span id="clinica-avaliacao-texto"></span>
+                        </div>
+                        <div class="clinica-especialidades" id="clinica-especialidades"></div>
+                    </div>
+                </div>
+                
+                <div class="clinica-tabs">
+                    <button class="tab-button active" data-tab="sobre">Sobre</button>
+                    <button class="tab-button" data-tab="medicos">Médicos</button>
+                    <button class="tab-button" data-tab="avaliacoes">Avaliações</button>
+                    <button class="tab-button" data-tab="galeria">Galeria</button>
+                </div>
+                
+                <div class="tab-content active" id="sobre">
+                    <div class="clinica-detalhes">
+                        <div class="clinica-info">
+                            <h3><i class="icon">📍</i> Endereço</h3>
+                            <p id="clinica-endereco"></p>
+                            <p id="clinica-bairro"></p>
+                            
+                            <h3><i class="icon">🕒</i> Horário de Funcionamento</h3>
+                            <div id="clinica-horarios"></div>
+                            
+                            <h3><i class="icon">📞</i> Contato</h3>
+                            <p id="clinica-telefone"></p>
+                            <p id="clinica-email"></p>
+                        </div>
+                        
+                        <div class="clinica-mapa" id="clinica-mapa">
+                            <!-- Mapa será carregado via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="medicos">
+                    <div class="medicos-list" id="medicos-list">
+                        <!-- Lista de médicos será carregada via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="avaliacoes">
+                    <div class="avaliacoes-header">
+                        <h3>Avaliações</h3>
+                        <button class="btn-avaliar" onclick="abrirModalAvaliacao()">
+                            Avaliar clínica
+                        </button>
+                    </div>
+                    <div class="avaliacoes-list" id="avaliacoes-list">
+                        <!-- Avaliações serão carregadas via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="galeria">
+                    <div class="galeria-container" id="galeria-container">
+                        <!-- Fotos da clínica serão carregadas via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="clinica-actions">
+                    <button class="btn-agendar-grande" onclick="iniciarAgendamento()">
+                        Agendar Consulta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Avaliação -->
+    <div id="modal-avaliacao" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModalAvaliacao()">&times;</span>
+            <h2>Avaliar Clínica</h2>
+            <form id="form-avaliacao">
+                <div class="form-group">
+                    <label>Sua avaliação (1-5 estrelas)</label>
+                    <div class="estrelas-avaliacao">
+                        <span onclick="classificar(1)">☆</span>
+                        <span onclick="classificar(2)">☆</span>
+                        <span onclick="classificar(3)">☆</span>
+                        <span onclick="classificar(4)">☆</span>
+                        <span onclick="classificar(5)">☆</span>
+                    </div>
+                    <input type="hidden" id="avaliacao-nota" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="avaliacao-comentario">Comentário (opcional)</label>
+                    <textarea id="avaliacao-comentario" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Enviar Avaliação</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Agendamento -->
+    <div id="modal-agendamento" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModalAgendamento()">&times;</span>
+            <h2>Agendar Consulta</h2>
+            <form id="form-agendamento-clinica">
+                <div class="form-group">
+                    <label for="agendamento-medico">Médico</label>
+                    <select id="agendamento-medico" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="agendamento-especialidade">Especialidade</label>
+                    <select id="agendamento-especialidade" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="agendamento-data">Data</label>
+                    <input type="date" id="agendamento-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="agendamento-horario">Horário</label>
+                    <select id="agendamento-horario" required></select>
+                </div>
+                <button type="submit" class="btn-submit">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts/clinica-detalhes.js"></script>
+</body>
+</html>

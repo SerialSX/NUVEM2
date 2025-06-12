@@ -8,26 +8,12 @@
     <link rel="stylesheet" href="styles/sidebar.css">
     <link rel="stylesheet" href="styles/paciente.css">
     <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="styles/clinicas.css">
     <script src="https://npmcdn.com/parse/dist/parse.min.js"></script>
     <script src="scripts/parseConfig.js"></script>
     <script src="scripts/auth.js"></script>
 </head>
 <body>
-    <script>
-        (async function() {
-            const usuario = await checkAuth('paciente');
-            if (!usuario) {
-                window.location.href = 'index.html';
-            }
-            
-            // Atualiza o nome do usuário na sidebar
-            const paciente = Parse.User.current();
-            if (paciente) {
-                document.getElementById('username').textContent = paciente.get('nome');
-            }
-        })();
-    </script>
-
     <div class="dashboard">
         <!-- Barra Lateral -->
         <div class="sidebar">
@@ -37,9 +23,9 @@
             </div>
             
             <ul class="sidebar-menu">
-                <li><a href="#" class="active"><i class="icon">📅</i> Agendamentos</a></li>
-                <li><a href="#"><i class="icon">🏥</i> Clínicas</a></li>
-                <li><a href="#" onclick="abrirChat()"><i class="icon">💬</i> Chat</a></li>
+                <li><a href="#"><i class="icon">📅</i> Agendamentos</a></li>
+                <li><a href="#" class="active" onclick="carregarClinicas()"><i class="icon">🏥</i> Clínicas</a></li>
+                <li><a href="#" onclick="abrirChat(event)"><i class="icon">💬</i> Chat</a></li>
                 <li><a href="#"><i class="icon">⚙️</i> Configurações</a></li>
             </ul>
             
@@ -50,38 +36,37 @@
 
         <!-- Conteúdo Principal -->
         <div class="main-content">
-            <h2>Agendar Nova Consulta</h2>
-            
-            <form id="form-agendamento">
-                <div class="form-group">
-                    <label for="tipo-consulta">Tipo de Consulta</label>
-                    <select id="tipo-consulta" required>
-                        <option value="">Selecione...</option>
-                        <option value="clinico">Clínico Geral</option>
-                        <option value="cardiologista">Cardiologista</option>
-                        <option value="dermatologista">Dermatologista</option>
+            <!-- Seção de Clínicas -->
+            <div class="clinicas-container">
+                <div class="clinicas-header">
+                    <h2>Clínicas Parceiras</h2>
+                    <button class="btn-refresh" onclick="carregarClinicas()">
+                        <i class="icon">🔄</i> Atualizar
+                    </button>
+                </div>
+                
+                <div class="filtros-clinicas">
+                    <div class="search-box">
+                        <i class="icon">🔍</i>
+                        <input type="text" id="busca-clinica" placeholder="Buscar clínica...">
+                    </div>
+                    <select id="filtro-especialidade">
+                        <option value="">Todas especialidades</option>
+                        <option value="cardiologia">Cardiologia</option>
+                        <option value="pediatria">Pediatria</option>
+                    </select>
+                    <select id="filtro-bairro">
+                        <option value="">Todos bairros</option>
+                        <option value="centro">Centro</option>
+                        <option value="zona-sul">Zona Sul</option>
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="data-consulta">Data e Hora</label>
-                    <input type="datetime-local" id="data-consulta" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="medico">Médico</label>
-                    <select id="medico" required>
-                        <option value="">Carregando médicos...</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn-primary">Agendar Consulta</button>
-            </form>
-            
-            <div class="agendamentos-list">
-                <h3>Próximas Consultas</h3>
-                <div id="lista-agendamentos">
-                    <p class="loading">Carregando agendamentos...</p>
+                <div id="lista-clinicas" class="clinicas-list">
+                    <div class="loading-clinicas">
+                        <p>Carregando clínicas disponíveis...</p>
+                        <div class="spinner"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,24 +74,11 @@
 
     <!-- Modal do Chat -->
     <div id="chat-modal" class="hidden">
-        <div class="chat-box">
-            <div class="chat-header">
-                <h3>Atendimento Online</h3>
-                <button onclick="fecharChat()" class="chat-close-btn">✕</button>
-            </div>
-            
-            <div id="chat-mensagens">
-                <p class="loading-chat">Carregando mensagens...</p>
-            </div>
-            
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
-                <button onclick="enviarMensagem()">Enviar</button>
-            </div>
-        </div>
+        <!-- ... (código existente do chat) ... -->
     </div>
 
     <script src="scripts/chat.js"></script>
+    <script src="scripts/clinicas.js"></script>
     <script src="scripts/paciente.js"></script>
 </body>
 </html>

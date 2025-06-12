@@ -1,0 +1,586 @@
+/* Container Principal */
+.clinica-detalhes-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.btn-voltar {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+    padding: 8px 0;
+}
+
+/* Header da Clínica */
+.clinica-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.clinica-imagem-grande {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    position: relative;
+}
+
+.clinica-info-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.clinica-info-header h1 {
+    color: #2c3e50;
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.clinica-avaliacao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.estrelas {
+    color: #FFD700;
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+.clinica-especialidades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.especialidade-tag {
+    background: #e8f5e9;
+    color: #4CAF50;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+/* Tabs */
+.clinica-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: #7f8c8d;
+    transition: all 0.3s;
+}
+
+.tab-button.active {
+    color: #4CAF50;
+    border-bottom-color: #4CAF50;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Seção Sobre */
+.clinica-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.clinica-info h3 {
+    color: #2c3e50;
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clinica-info h3:first-child {
+    margin-top: 0;
+}
+
+.clinica-mapa {
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.horario-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.horario-item .dia {
+    font-weight: 600;
+}
+
+/* Seção Médicos */
+.medicos-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.medico-card {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.medico-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.medico-imagem {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+}
+
+.medico-info h4 {
+    margin: 0 0 5px;
+    color: #2c3e50;
+}
+
+.medico-info .especialidade {
+    color: #4CAF50;
+    font-size: 13px;
+    margin: 0 0 3px;
+}
+
+.medico-info .crm {
+    color: #7f8c8d;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* Seção Avaliações */
+.avaliacoes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-avaliar {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.btn-avaliar:hover {
+    background: #3d8b40;
+}
+
+.avaliacao-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.avaliacao-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.avaliacao-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avaliacao-usuario .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #4CAF50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.avaliacao-usuario h4 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.avaliacao-usuario .data {
+    color: #7f8c8d;
+    font-size: 12px;
+}
+
+.avaliacao-nota {
+    color: #FFD700;
+    font-size: 16px;
+}
+
+.avaliacao-comentario {
+    color: #333;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Seção Galeria */
+.galeria-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.galeria-item {
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.galeria-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal de Avaliação */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #7f8c8d;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #e74c3c;
+}
+
+.modal h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.estrelas-avaliacao {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.estrelas-avaliacao span {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.estrelas-avaliacao span:hover,
+.estrelas-avaliacao span:hover ~ span {
+    color: #FFD700;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.btn-submit {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    width: 100%;
+}
+
+.btn-submit:hover {
+    background: #3d8b40;
+}
+
+/* Lightbox */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4000;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+}
+
+.close-lightbox {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Botão de Agendamento */
+.clinica-actions {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.btn-agendar-grande {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-agendar-grande:hover {
+    background: #3d8b40;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* Loading e Estados */
+.loading-full {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.loading-full .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+.error-full {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.error-full .icon {
+    font-size: 40px;
+    color: #e74c3c;
+    margin-bottom: 15px;
+}
+
+.error-full p {
+    color: #2c3e50;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .clinica-header {
+        grid-template-columns: 1fr;
+    }
+    
+    .clinica-detalhes {
+        grid-template-columns: 1fr;
+    }
+    
+    .clinica-mapa {
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .clinica-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+    }
+    
+    .tab-button {
+        padding: 10px 15px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 0 15px;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .clinica-detalhes-container {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .clinica-info-header h1 {
+        color: #ecf0f1;
+    }
+    
+    .tab-button {
+        color: #bdc3c7;
+    }
+    
+    .tab-button.active {
+        color: #4CAF50;
+    }
+    
+    .medico-card {
+        background: #2c3e50;
+        border-color: #3d566e;
+    }
+    
+    .medico-info h4 {
+        color: #ecf0f1;
+    }
+    
+    .avaliacao-item {
+        border-bottom-color: #3d566e;
+    }
+    
+    .avaliacao-usuario h4 {
+        color: #ecf0f1;
+    }
+    
+    .avaliacao-comentario {
+        color: #ecf0f1;
+    }
+    
+    .modal-content {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .modal h2 {
+        color: #ecf0f1;
+    }
+    
+    .form-group label {
+        color: #ecf0f1;
+    }
+    
+    textarea {
+        background: #2c3e50;
+        color: #ecf0f1;
+        border-color: #3d566e;
+    }
+}
